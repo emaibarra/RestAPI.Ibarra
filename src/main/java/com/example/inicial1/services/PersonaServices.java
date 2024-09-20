@@ -1,35 +1,78 @@
 package com.example.inicial1.services;
 
+import com.example.inicial1.entities.Persona;
+import com.example.inicial1.repositories.PersonaRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class PersonaServices implements BaseService {
+public class PersonaServices implements BaseService<Persona> {
 
+    @Autowired
+    private PersonaRepository personaRepository;
 
     @Override
-    public List findAll() throws Exception {
-        return List.of();
+    @Transactional
+    public List<Persona> findAll() throws Exception {
+        try {
+        List<Persona> entities = personaRepository.findAll();
+        return entities;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
-    public Object findById(Long id) throws Exception {
-        return null;
+    @Transactional
+    public Persona findById(Long id) throws Exception {
+        try {
+            Optional<Persona> entityOptional = personaRepository.findById(id);
+            return entityOptional.get();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
-    public Object save(Object entity) throws Exception {
-        return null;
+    @Transactional
+    public Persona save(Persona entity) throws Exception {
+        try {
+        entity = personaRepository.save(entity);
+        return entity;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
-    public Object update(Long id, Object entity) throws Exception {
-        return null;
+    @Transactional
+    public Persona update(Long id, Persona entity) throws Exception {
+        try {
+            Optional<Persona> entityOptional = personaRepository.findById(id);
+            Persona persona = entityOptional.get();
+            persona = personaRepository.save(persona);
+            return persona;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id) throws Exception {
-        return false;
+        try {
+            if (personaRepository.existsById(id)){
+                personaRepository.deleteById(id);
+                return true;
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 }
